@@ -8,6 +8,11 @@ export default function Chat() {
   const [room, setRoom] = useState('')
   const location = useLocation().search
 
+  function setInfo(paramUser, paramRoom) {
+    setUser(paramUser)
+    setRoom(paramRoom)
+  }
+
   useEffect(() => {
     const newSocket = io(`http://localhost:3000`, { transports: ['websocket'] })
     newSocket.on('connect', () => {
@@ -18,19 +23,13 @@ export default function Chat() {
 
   useEffect(() => {
     const queryString = new URLSearchParams(location)
-    setUser(queryString.get('user'))
-    setRoom(queryString.get('room'))
-  }, [location])
-
-  // useEffect(() => {
-  //   if (socket) {
-  //     socket.emit('join', { user, room })
-  //   }
-  // })
-
-  useEffect(() => {
-    console.log(`User: ${user} & Room: ${room}`)
-  }, [user, room])
+    const queryUser = queryString.get('user')
+    const queryRoom = queryString.get('room')
+    setInfo(queryUser, queryRoom)
+    if (socket) {
+      socket.emit('join', { queryUser, queryRoom })
+    }
+  }, [socket])
 
   return <div>Chat</div>
 }
