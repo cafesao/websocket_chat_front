@@ -1,10 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import {
   Grid,
-  Select,
   FormControl,
-  MenuItem,
-  InputLabel,
   TextField,
   Box,
   Button,
@@ -15,17 +13,18 @@ import listRooms from '../../helper/listRooms'
 
 export default function Home() {
   const [user, setUser] = useState('')
-  const [room, setRoom] = useState('')
+  const [room, setRoom] = useState(null)
+
+  const navigate = useNavigate()
 
   async function handleSubmitForm() {
-    console.log(`User: ${user}`)
-    console.log(`Room: ${room}`)
     clearForm()
+    navigate(`/chat?user=${user}&room=${room.value}`)
   }
 
   function clearForm() {
     setUser('')
-    setRoom('')
+    setRoom(null)
   }
 
   return (
@@ -53,16 +52,11 @@ export default function Home() {
               disablePortal
               options={listRooms}
               renderInput={(params) => <TextField {...params} label="Rooms" />}
-            />
-            {/* <Select
               value={room}
-              label="Room"
-              onChange={(e) => setRoom(e.target.value)}
-            >
-              <MenuItem value={'nodejs'}>NodeJS</MenuItem>
-              <MenuItem value={'python'}>Python</MenuItem>
-              <MenuItem value={'ruby'}>Ruby</MenuItem>
-            </Select> */}
+              onChange={(event, room) =>
+                room !== null ? setRoom(room) : setRoom(null)
+              }
+            />
           </FormControl>
         </Box>
       </Grid>
